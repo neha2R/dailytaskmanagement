@@ -1,0 +1,432 @@
+@extends('layouts.app')
+@section('content')
+    <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+        <div>
+            <h4 class="mb-3 mb-md-0">Warehouse And Depo Map With Vehicles
+            </h4>
+        </div>
+    </div>
+    <ul class="nav nav-tabs nav-tabs-line" id="lineTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active tab-heading" id="home-line-tab" data-bs-toggle="tab" data-bs-target="#warehouse"
+                role="tab" aria-controls="home" aria-selected="true">Warehouse</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link tab-heading" id="home-line-tab" data-bs-toggle="tab" data-bs-target="#depo" role="tab"
+                aria-controls="home" aria-selected="true">Depo</a>
+        </li>
+    </ul>
+
+
+
+    <div class="tab-content mt-3" id="lineTabContent">
+        <div class="tab-pane fade show active" id="warehouse" role="tabpanel" aria-labelledby="home-line-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-end">
+                    {{-- <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#create_warehouse" data-bs-whatever="@getbootstrap">
+                        <i class="mdi mdi-plus"></i> Add warehouse
+                    </button> --}}
+                </div>
+                <div class="card-body">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Name</th>
+                                <th>city</th>
+                                <th>Head</th>
+                                <th>Vehicles</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @foreach ($warehouses as $key => $item)
+                                <tr>
+                                    <td class="center">{{ $key + 1 }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->city }}</td>
+                                    @if ($item->user->last())
+                                        <td>{{ $item->user->last()->user->name ?? '-' }}</td>
+                                    @else
+                                        <td> <span class="badge bg-danger">Not Mapped</span></td>
+                                    @endif
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input item_status" type="checkbox" role="switch"
+                                                data-id="{{ $item->id }}" id="flexSwitchCheckChecked"
+                                                {{ $item->is_active ? 'checked' : '' }} />
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="dropdown mb-2">
+                                            <button class="btn btn-link p-0" type="button" id="dropdownMenuButton7"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="icon-lg text-muted pb-3px" data-feather="more-vertical"></i>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                                @if (!$item->user->last())
+                                                    <a type="button"
+                                                        onclick="openWhModel('{{ $item->name }}',{{ $item->id }})"
+                                                        class="dropdown-item d-flex align-items-center"><i
+                                                            data-feather="user-plus" class="icon-sm me-2"></i> <span
+                                                            class="">Map</span></a>
+                                                @else
+                                                    <a type="button" onclick="unmap({{ $item->id }},'warehouse')"
+                                                        class="dropdown-item d-flex align-items-center"><i
+                                                            data-feather="user-minus" class="icon-sm me-2"></i> <span
+                                                            class="">Unmap</span></a>
+                                                @endif
+                                                <a type="button" onclick="showHistory({{ $item->id }},'warehouse')"
+                                                    class="dropdown-item d-flex align-items-center"><i data-feather="eye"
+                                                        class="icon-sm me-2"></i> <span class="">View</span></a>
+                                                <a type="button" onclick="getWarehouseData({{ $item->id }})"
+                                                    class="dropdown-item d-flex align-items-center"><i data-feather="edit"
+                                                        class="icon-sm me-2"></i>
+                                                    <span class="">Edit</span></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach --}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="depo" role="tabpanel" aria-labelledby="home-line-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-end">
+                    {{-- <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#create_depo" data-bs-whatever="@getbootstrap">
+                        <i class="mdi mdi-plus"></i> Add Depo
+                    </button> --}}
+                </div>
+                <div class="card-body">
+                    <table id="dataTableExample1" class="table">
+                        <thead>
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Name</th>
+                                <th>Warehouse</th>
+                                <th>City</th>
+                                <th>Head</th>
+                                <th>status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @foreach ($depos as $key => $item)
+                                <tr>
+                                    <td class="center">{{ $key + 1 }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->warehouse->name ?? '-' }}</td>
+                                    <td>{{ $item->city }}</td>
+                                    @if ($item->user->last())
+                                        <td>{{ $item->user->last()->user->name ?? '-' }}</td>
+                                    @else
+                                        <td> <span class="badge bg-danger">Not Mapped</span></td>
+                                    @endif
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input item_status1" type="checkbox" role="switch"
+                                                data-id="{{ $item->id }}" id="flexSwitchCheckChecked"
+                                                {{ $item->is_active ? 'checked' : '' }} />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown mb-2">
+                                            <button class="btn btn-link p-0" type="button" id="dropdownMenuButton7"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="icon-lg text-muted pb-3px" data-feather="more-vertical"></i>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                                @if (!$item->user->last())
+                                                    <a type="button"
+                                                        onclick="openDpModel('{{ $item->name }}',{{ $item->id }})"
+                                                        class="dropdown-item d-flex align-items-center"><i
+                                                            data-feather="user-plus" class="icon-sm me-2"></i> <span
+                                                            class="">Map</span></a>
+                                                @else
+                                                    <a type="button" onclick="unmap({{ $item->id }},'depo')"
+                                                        class="dropdown-item d-flex align-items-center"><i
+                                                            data-feather="user-minus" class="icon-sm me-2"></i> <span
+                                                            class="">Unmap</span></a>
+                                                @endif
+                                                <a type="button" onclick="showHistory({{ $item->id }},'depo')"
+                                                    class="dropdown-item d-flex align-items-center"><i data-feather="eye"
+                                                        class="icon-sm me-2"></i> <span class="">View</span></a>
+                                                <a type="button" onclick="getDepoData({{ $item->id }})"
+                                                    class="dropdown-item d-flex align-items-center"><i data-feather="edit"
+                                                        class="icon-sm me-2"></i>
+                                                    <span class="">Edit</span></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach --}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="wh_maping" tabindex="-1" aria-labelledby="wh_maping" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="varyingModalLabel">Map User with warehouse
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div id="maping-container">
+                    <form id="wh_maping_form" method="post" action="{{ route('admin.warehouseDepoMap') }}">
+                        <div class="modal-body">
+                            @csrf
+                            <div class="row mb-3">
+                                <div class="col-lg-3 col-sm-3">
+                                    <label for="gender" class="form-label">Warehouse</label>
+                                </div>
+                                <div class="col-lg-8 col-sm-8">
+                                    <input type="hidden" name="wh_id" id="wh_id" value="">
+                                    <input type="text" id="wh_name" readonly class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3 col-sm-3">
+                                    <label for="gender" class="form-label">Select Vehicles</label>
+                                </div>
+                                <div class="col-lg-8 col-sm-8">
+                                    <select class="js-example-basic-single " style="width: 100%;" name="wh_user_id"
+                                        id="wh_user_id">
+                                        <option selected disabled>Select Vehicles</option>
+                                        {{-- @foreach ($active_wh_users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach --}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="sumbit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="dp_maping" tabindex="-1" aria-labelledby="dp_maping" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="varyingModalLabel">Map User with Depo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div id="maping-container">
+                    <form id="dp_maping_form" method="post" action="{{ route('admin.warehouseDepoMap') }}">
+                        <div class="modal-body">
+                            @csrf
+                            <div class="row mb-3">
+                                <div class="col-lg-3 col-sm-3">
+                                    <label for="gender" class="form-label">Depo</label>
+                                </div>
+                                <div class="col-lg-8 col-sm-8">
+                                    <input type="hidden" id="dp_id" value="" name="dp_id">
+                                    <input type="text" id="dp_name" readonly class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3 col-sm-3">
+                                    <label for="gender" class="form-label">Select Vehicles</label>
+                                </div>
+                                <div class="col-lg-8 col-sm-8">
+                                    <select class="js-example-basic-single " style="width: 100%;" name="dp_user_id"
+                                        id="dp_user_id">
+                                        <option selected disabled>Select Vehicles</option>
+                                        {{-- @foreach ($active_depo_users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach --}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="sumbit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="show_assignment" tabindex="-1" aria-labelledby="show_assignment" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="varyingModalLabel">History of Map/Unmap</h5>
+                    <h5 id="att_date" class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive pt-0">
+                        <table class="table">
+                            <div class="d-flex justify-content-between align-items-baseline mb-2 mt-2">
+                                <h6 class="card-title mb-0">Activity</h6>
+                            </div>
+                            <thead id="history_clients">
+
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('js')
+    <script>
+        // select 2 and flatepicker
+        $(function() {
+            'use strict';
+            if ($("#wh_user_id").length) {
+                $("#wh_user_id").select2({
+                    dropdownParent: $("#wh_maping")
+                });
+            }
+            if ($("#dp_user_id").length) {
+                $("#dp_user_id").select2({
+                    dropdownParent: $("#dp_maping")
+                });
+            }
+        });
+        function openWhModel(wh_name, wh_id) {
+            var model = $('#wh_maping');
+            if (wh_name && wh_id) {
+                $('#wh_name').val(wh_name);
+                $('#wh_id').val(wh_id);
+                model.modal('show');
+            }
+        }
+
+        function openDpModel(dp_name, dp_id) {
+            var model = $('#dp_maping');
+            if (dp_name && dp_id) {
+                $('#dp_name').val(dp_name);
+                $('#dp_id').val(dp_id);
+                model.modal('show');
+            }
+        }
+
+        // validation on maping
+        $(function() {
+            // create validation for wh maping
+            const whMapingRules = {
+                wh_user_id: {
+                    required: true,
+                },
+            };
+            const whMapingMessages = {
+                wh_user_id: {
+                    required: "The User is required.",
+                }
+            };
+            // Initialize validation for the add division form
+            initializeValidation("#wh_maping_form", whMapingRules, whMapingMessages);
+
+            // create validation for dp maping
+            const dpMapingRules = {
+                dp_user_id: {
+                    required: true,
+                },
+            };
+            const dpMapingMessages = {
+                dp_user_id: {
+                    required: "The User is required.",
+                }
+            };
+            // Initialize validation for the add division form
+            initializeValidation("#dp_maping_form", dpMapingRules, dpMapingMessages);
+        })
+
+        function unmap(id, type) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-2'
+                },
+                buttonsStyling: false,
+            })
+            swalWithBootstrapButtons.fire({
+                title: "Are you sure?",
+                text: "you want to unmap this",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'me-2',
+                confirmButtonText: 'Yes, Unmap it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    if (id) {
+                        $('#spin').removeClass('d-none');
+                        var url = "{{ route('admin.warehouseDepoUnmap', ['id' => ':id', 'type' => ':type']) }}";
+                        url = url.replace(/:id/g, id);
+                        url = url.replace(/:type/g, type);
+                        window.location.href = url;
+                    }
+                }
+            });
+        }
+
+        function showHistory(id, type) {
+
+            var url = "{{ route('admin.whDpHistoryMapUnmap', ['id' => ':id', 'type' => ':type']) }}";
+            url = url.replace(/:id/g, id);
+            url = url.replace(/:type/g, type);
+            console.log(url);
+            getData(url, function(data) {
+                console.log(data);
+                if (data.data.length == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No history found for this ' + type,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+                if (data.status == 200 && data.data.length > 0) {
+                    $('#show_assignment').modal("show");
+                    console.log(data);
+                    if (data.data.length) {
+                        $('#history_clients').empty();
+                        $.each(data.data, function(key, value) {
+                            console.log(value);
+                            $('#history_clients').append(`<a href="javascript:;" class="d-flex align-items-center border-bottom pb-3">
+                                                <div class="w-100">
+                                                    <div class="d-flex align-items-center">
+                                                        <h6 class="fw-normal text-body mb-1">${value.warehouse ? value.warehouse.name : value.depo.name}</h6>
+                                                        <p class="text-muted tx-14 ms-2">${value.type} at </p>
+                                                        <p class="text-muted tx-12 ms-2">${value.date}</p>
+                                                        <p class="text-muted tx-12 ms-2"> (${value.user.name})</p>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </a>`);
+                        })
+                    } else {
+
+                    }
+
+                }
+            })
+        }
+    </script>
+@endsection
